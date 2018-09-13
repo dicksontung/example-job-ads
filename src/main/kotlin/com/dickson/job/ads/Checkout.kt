@@ -17,8 +17,8 @@ data class Checkout(@Id @GeneratedValue val id: Long? = null,
     }
 
     fun remove(id: Long): Checkout {
-        items.filter {
-            it.id != id
+        items.removeIf {
+            it.id == id
         }
         return this
     }

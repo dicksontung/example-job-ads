@@ -1,7 +1,6 @@
 package com.dickson.job.ads
 
 import java.math.BigDecimal
-import java.math.RoundingMode
 
 enum class Promotion(val description: String,
                      val calcPrice: (checkout: Checkout) -> BigDecimal,
@@ -57,6 +56,21 @@ enum class Promotion(val description: String,
                     }
                 }
                 return premiumAdsCount >= 4
+            }),
+    FORD("Gets a “5 for 4” deal on Classic Ads; " +
+            "Gets a discount on Standout Ads where the price drops to $309.99 per ad; " +
+            "Gets a discount on Premium Ads when 3 or more are purchased. The price drops to $389.99 per ad",
+            fun(checkout: Checkout): BigDecimal {
+                var total = BigDecimal.ZERO
+
+
+
+
+
+                return total
+            },
+            fun(checkout: Checkout): Boolean {
+                return true
             })
 
 }

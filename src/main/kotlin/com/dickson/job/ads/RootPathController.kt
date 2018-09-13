@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping
 class RootPathController {
 
     @GetMapping("/")
-    fun home(model: Model): String {
-        model["title"] = "Home"
-        return "home"
+    fun index(): String {
+        return "index"
     }
 
 }

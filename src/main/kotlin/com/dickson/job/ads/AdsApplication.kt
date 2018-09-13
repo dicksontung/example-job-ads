@@ -22,10 +22,14 @@ class AdsApplication {
                 productRepository.save(ad2)
                 productRepository.save(ad3)
 
-                val user1 = User(name = "nike_user", promotion = Promotion.NIKE)
-                val user2 = User(id= 999, name = "normal_user")
-                userRepository.save(user1)
-                userRepository.save(user2)
+                val normalUser = User(name = "normal_user")
+                val userNike = User(name = "nike_user", promotion = Promotion.NIKE)
+                val userUnilever = User(name = "unilever_user", promotion = Promotion.UNILEVER)
+                val userFord = User(name = "ford_user", promotion = Promotion.FORD)
+                userRepository.save(normalUser)
+                userRepository.save(userNike)
+                userRepository.save(userUnilever)
+                userRepository.save(userFord)
                 val item1 = Item(name = "first", product = ad1)
                 val item2 = Item(name = "second", product = ad2)
 
