@@ -27,7 +27,8 @@ enum class Promotion(val description: String,
                 val classicAds = checkout.items.stream().filter {
                     "Classic" == it.product.id
                 }.toList()
-                val classicAdsPrice = classicAds.first().product.price ?: return BigDecimal.ZERO
+                val classicAdsPrice = classicAds.getOrNull(0)?.product?.price
+                        ?: return BigDecimal.ZERO
                 val totalClassicAdsPrice = xForYDeals(3, 2, classicAds.size, classicAdsPrice)
                 total = total.add(totalClassicAdsPrice)
                 return scale(total)
@@ -82,14 +83,14 @@ enum class Promotion(val description: String,
                     it.product.id
                 }
                 val classicAds = map.get("Classic")
-                val classicAdsPrice = classicAds?.first()?.product?.price ?: BigDecimal.ZERO
+                val classicAdsPrice = classicAds?.getOrNull(0)?.product?.price ?: BigDecimal.ZERO
                 total = total.add(xForYDeals(5, 4, classicAds?.size ?: 0, classicAdsPrice))
 
                 val standoutAdsCount = map.get("Standout")?.size ?: 0
                 total = total.add(BigDecimal(309.99).multiply(BigDecimal(standoutAdsCount)))
 
                 val premiumAdsCount = map.get("Premium")?.size ?: 0
-                val premiumNormalPrice = map.get("Premium")?.first()?.product?.price
+                val premiumNormalPrice = map.get("Premium")?.getOrNull(0)?.product?.price
                         ?: BigDecimal.ZERO
                 total = if (premiumAdsCount >= 3) {
                     total.add(BigDecimal(389.99).multiply(BigDecimal(premiumAdsCount)))
