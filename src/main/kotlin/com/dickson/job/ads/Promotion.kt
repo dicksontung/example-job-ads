@@ -1,6 +1,8 @@
 package com.dickson.job.ads
 
 import java.math.BigDecimal
+import java.math.RoundingMode
+import kotlin.streams.toList
 
 enum class Promotion(val description: String,
                      val calcPrice: (checkout: Checkout) -> BigDecimal,
@@ -12,7 +14,7 @@ enum class Promotion(val description: String,
                     System.out.println(it.product)
                     total = total.add(it.product.price)
                 }
-                return total
+                return scale(total)
             },
             fun(checkout: Checkout): Boolean = true),
     UNILEVER("Gets a “3 for 2” deal on Classic Ads",
@@ -23,19 +25,34 @@ enum class Promotion(val description: String,
                 }.forEach {
                     total = total.add(it.product.price)
                 }
-
-                val classicAdsCount = checkout.items.stream().filter {
+                val classicAds = checkout.items.stream().filter {
                     "Classic" == it.product.id
-                }.count()
-                val divideBy3 = classicAdsCount / 3
-                val remainder = classicAdsCount % 3
-                val totalClassicAdsPrice = BigDecimal(269.99).multiply(BigDecimal(divideBy3 * 2 + remainder))
+                }.toList()
+                val classicAdsPrice = classicAds.first().product.price ?: return BigDecimal.ZERO
+                val totalClassicAdsPrice = xForYDeals(3, 2, classicAds.size, classicAdsPrice)
                 total = total.add(totalClassicAdsPrice)
-                return total
+                return scale(total)
             },
             fun(checkout: Checkout): Boolean {
                 return true
             }),
+    APPLE(
+            "Gets a discount on Standout Ads where the price drops to $299.99 per ad",
+            fun(checkout: Checkout): BigDecimal {
+                var total = BigDecimal.ZERO
+                for (item in checkout.items) {
+                    total = if ("Standout" == item.product.id) {
+                        total.add(BigDecimal(299.99))
+                    } else {
+                        total.add(item.product.price)
+                    }
+                }
+                return scale(total)
+            },
+            fun(checkout: Checkout): Boolean {
+                return true
+            }
+    ),
     NIKE("Gets a discount on Premium Ads where 4 or more are purchased. The price drops to $379.99 per ad",
             fun(checkout: Checkout): BigDecimal {
                 var total = BigDecimal.ZERO
@@ -46,7 +63,7 @@ enum class Promotion(val description: String,
                         total.add(item.product.price)
                     }
                 }
-                return total
+                return scale(total)
             },
             fun(checkout: Checkout): Boolean {
                 var premiumAdsCount = 0
@@ -62,15 +79,36 @@ enum class Promotion(val description: String,
             "Gets a discount on Premium Ads when 3 or more are purchased. The price drops to $389.99 per ad",
             fun(checkout: Checkout): BigDecimal {
                 var total = BigDecimal.ZERO
+                var map = checkout.items.groupBy {
+                    it.product.id
+                }
+                val classicAds = map.get("Classic")
+                val classicAdsPrice = classicAds?.first()?.product?.price ?: BigDecimal.ZERO
+                total = total.add(xForYDeals(5, 4, classicAds?.size ?: 0, classicAdsPrice))
 
+                val standoutAdsCount = map.get("Standout")?.size ?: 0
+                total = total.add(BigDecimal(309.99).multiply(BigDecimal(standoutAdsCount)))
 
-
-
-
-                return total
+                val premiumAdsCount = map.get("Premium")?.size ?: 0
+                val premiumNormalPrice = map.get("Premium")?.first()?.product?.price
+                        ?: BigDecimal.ZERO
+                total = if (premiumAdsCount >= 3) {
+                    total.add(BigDecimal(389.99).multiply(BigDecimal(premiumAdsCount)))
+                } else {
+                    total.add(premiumNormalPrice.multiply(BigDecimal(premiumAdsCount)))
+                }
+                return scale(total)
             },
             fun(checkout: Checkout): Boolean {
                 return true
-            })
+            });
 
+    companion object {
+        fun xForYDeals(x: Int, y: Int, itemCount: Int, price: BigDecimal): BigDecimal {
+            val itemCountAfterDeal: Int = itemCount / x * y + itemCount % x
+            return price.multiply(BigDecimal(itemCountAfterDeal))
+        }
+
+        fun scale(price: BigDecimal): BigDecimal = price.setScale(2, RoundingMode.HALF_UP)
+    }
 }
