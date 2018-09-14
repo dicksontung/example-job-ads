@@ -10,7 +10,8 @@ import javax.persistence.OneToMany
 data class Checkout(@Id @GeneratedValue val id: Long? = null,
                     val userId: Long,
                     @OneToMany val items: MutableList<Item> = mutableListOf(),
-                    var total: BigDecimal = BigDecimal.ZERO) {
+                    var total: BigDecimal = BigDecimal.ZERO,
+                    var nonDiscountedTotal: BigDecimal = BigDecimal.ZERO) {
     fun add(item: Item): Checkout {
         items.add(item)
         return this

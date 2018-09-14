@@ -15,4 +15,6 @@ interface UserRepository : PagingAndSortingRepository<User, Long>
 interface ItemRepository : PagingAndSortingRepository<Item, Long>
 
 @RepositoryRestResource(collectionResourceRel = "checkouts", path = "checkouts")
-interface CheckoutRepository : PagingAndSortingRepository<Checkout, Long>
+interface CheckoutRepository : PagingAndSortingRepository<Checkout, Long> {
+    fun findByUserId(userId: Long): List<Checkout>
+}

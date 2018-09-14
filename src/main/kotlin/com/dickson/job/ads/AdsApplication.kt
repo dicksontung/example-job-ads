@@ -30,9 +30,6 @@ class AdsApplication {
                 userRepository.save(userNike)
                 userRepository.save(userUnilever)
                 userRepository.save(userFord)
-                val item1 = Item(name = "first", product = ad1)
-                val item2 = Item(name = "second", product = ad2)
-
             }
 }
 
@@ -46,5 +43,6 @@ class RepositoryConfig : RepositoryRestConfigurerAdapter() {
 
     override fun configureRepositoryRestConfiguration(config: RepositoryRestConfiguration) {
         config.exposeIdsFor(User::class.java)
+                .exposeIdsFor(Product::class.java)
     }
 }
