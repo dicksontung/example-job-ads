@@ -24,11 +24,13 @@ class AdsApplication {
 
                 val normalUser = User(name = "normal_user")
                 val userNike = User(name = "nike_user", promotion = Promotion.NIKE)
+                val userApple = User(name = "apple_user", promotion = Promotion.APPLE)
                 val userUnilever = User(name = "unilever_user", promotion = Promotion.UNILEVER)
                 val userFord = User(name = "ford_user", promotion = Promotion.FORD)
                 userRepository.save(normalUser)
                 userRepository.save(userNike)
                 userRepository.save(userUnilever)
+                userRepository.save(userApple)
                 userRepository.save(userFord)
             }
 }
