@@ -11,7 +11,6 @@ enum class Promotion(val description: String,
             fun(checkout: Checkout): BigDecimal {
                 var total = BigDecimal.ZERO
                 checkout.items.stream().forEach {
-                    System.out.println(it.product)
                     total = total.add(it.product.price)
                 }
                 return scale(total)

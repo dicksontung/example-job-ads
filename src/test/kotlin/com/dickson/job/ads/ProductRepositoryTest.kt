@@ -18,10 +18,9 @@ class ProductRepositoryTest(@Autowired val entityManager: TestEntityManager,
         val ad1 = Product("Classic", "Classic Ad", BigDecimal(269.99))
         val ad2 = Product("Standout", "Standout Ad", BigDecimal(322.99))
         val ad3 = Product("Premium", "Premium Ad", BigDecimal(394.99))
-        entityManager.persist(ad1)
-        entityManager.persist(ad2)
-        entityManager.persist(ad3)
-        entityManager.flush()
+        productRepository.save(ad1)
+        productRepository.save(ad2)
+        productRepository.save(ad3)
 
         val found = productRepository.findAll().toList()
         assertThat(found.size).isEqualTo(3)
